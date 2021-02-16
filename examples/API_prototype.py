@@ -27,14 +27,14 @@ def main():
 
     cuts = [Cut("cut1", "expression1"), Cut("cut2", "expression2")]
 
-    # Instances of final actions we want to perform on the dataset
-    dumper = NTupleDumper() #TODO
+    # Instances of final actions we want to perform on the dataset (?)
+    #dumper = NTupleDumper()
 
     # Create Tasks
     task = Task(
             dataset=dataset,
             transformations=[tagger, *cuts],
-            actions=[dumper]
+            actions="dump"
             )
     tasks = [task]
 
