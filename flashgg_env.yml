@@ -16,6 +16,8 @@ dependencies:
   - root
   - uproot
   - awkward
+  - pyarrow
   - aghast
   - boost-histogram
   - mplhep
+  - rich

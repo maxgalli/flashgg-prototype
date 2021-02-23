@@ -21,7 +21,7 @@ setuptools.setup(
     name="flashgg",
     version="0.0.0",
     author="CMS",
-    packages=["flashgg"],
+    packages=["flashgg", "flashgg.helpers"],
     install_requires=get_dependencies("flashgg_env.yml"),
     python_requires=">=3.6",
 )
