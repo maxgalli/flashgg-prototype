@@ -28,24 +28,24 @@ def main():
     cuts = [Cut("cut1", "expression1"), Cut("cut2", "expression2")]
 
     # Instances of final actions we want to perform on the dataset (?)
-    #dumper = NTupleDumper()
+    dumper = NTupleDumper("path_to_output_file")
 
     # Create Tasks
     task = Task(
             dataset=dataset,
             transformations=[tagger, *cuts],
-            actions="dump"
+            action=dumper
             )
     tasks = [task]
 
     # Start computation
 
-    run_manager = RunManager()
+    run_manager = RunManager(tasks=tasks)
 
     # Locally - single_thread (for debugging), multiprocessing or multithreading
     run_manager.run_locally(
             parallelization_type="multiprocessing",
-            tasks=tasks)
+            )
 
     # Distributed - choose batch queuing system and parallelization library
     # batch_queuing_system = HTCondor, SLURM
@@ -53,7 +53,6 @@ def main():
     run_manager.run_on_cluster(
             batch_queuing_system="HTCondor",
             backend="Dask",
-            tasks=tasks
             )
 
 
