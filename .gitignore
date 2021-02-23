@@ -61,3 +61,8 @@ dask-worker-space/*
 
 # Slurm
 slurm*
+
+# Output files
+*.parquet
+*.prq
+*.pq
