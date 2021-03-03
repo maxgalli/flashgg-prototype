@@ -21,3 +21,4 @@ dependencies:
   - boost-histogram
   - mplhep
   - rich
+  - xgboost

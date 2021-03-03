@@ -1,4 +1,4 @@
-from .interface import Dataset
+from .dataset import Dataset
 from .interface import Task
 
 import logging
@@ -16,13 +16,13 @@ class RunManager:
     def _make_small_tasks(self, tasks):
         small_tasks = []
         for task in tasks:
-            for n, file_name in enumerate(task.dataset_api.file_names):
-                dataset_api = Dataset(
-                        "{}-{}".format(task.dataset_api.name, n),
-                        task.dataset_api.tree_name,
+            for n, file_name in enumerate(task.dataset.file_names):
+                dataset = Dataset(
+                        "{}-{}".format(task.dataset.name, n),
+                        task.dataset.tree_name,
                         [file_name],
-                        task.dataset_api.variables
+                        task.dataset.variables
                         )
-                small_task = Task(dataset_api, task.transformations, task.action)
+                small_task = Task(dataset, task.transformations, task.action)
                 small_tasks.append(small_task)
         return small_tasks
