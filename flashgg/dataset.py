@@ -74,8 +74,8 @@ class Dataset:
 
         First, the name of the systematics in the TTree is inferred. This only happens if self.variables is not empty, otherwise an
         exception is raised.
-        After getting the input plain awkward array with get_plain_dataframe, _manipulate_ak_array is called to return the final
-        Awkward array.
+        After getting the input plain awkward array with get_plain_dataframe, the awkward array constructor is called with the output
+        of the function _get_nested_array.
 
         Returns:
             output_df (awkward.highlevel.Array): Awkward array with the above mentioned structure
@@ -118,6 +118,9 @@ class Dataset:
 
 
     def _infer_systematics(self):
+        """Compare a set of variables with the branches of a TTree. Assuming that the format in which we write
+        the systematic branches is "$var_$sys", a list containing all the values for $vars is assigned to self.systematics
+        """
         branches = self.explore()["branches"]
         for var in self.variables:
             for branch in branches:
@@ -128,6 +131,17 @@ class Dataset:
 
 
     def _get_nested_array_dict(self, input_df):
+        """Given an input TTree in the awkward array format, return a nested dictionary with the following format:
+        array_dic = {
+            "var_a" : {
+                "Nominal": branch_var_a,
+                "sys_1": branch_var_a_sys_1
+            }
+        }
+
+        Returns:
+            array_dic (dictionary): nested dictionary
+        """
         array_dic = {}
         for var in self.variables:
             array_dic[var] = {}
