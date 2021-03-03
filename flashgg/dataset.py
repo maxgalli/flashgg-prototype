@@ -33,7 +33,7 @@ class Dataset:
             self.variables = [*variables]
         else:
             self.variables = []
-        self.systematics = []
+        self.systematics = ["Nominal"]
 
 
     def __str__(self):
@@ -86,7 +86,7 @@ class Dataset:
         start = time()
         self._infer_systematics()
         input_df = self.get_plain_dataframe()
-        output_df = self._manipulate_ak_array(input_df)
+        output_df = ak.Array(self._get_nested_array_dict(input_df))
         stop = time()
         logger.info("Extracted and processed dataframe: \n{} \nin {:.2f} seconds".format(output_df.type, stop - start))
         return output_df
@@ -127,34 +127,16 @@ class Dataset:
                         self.systematics.append(sys)
 
 
-    def _manipulate_ak_array(self, input_df):
-        def _get_systematics_record(event, var, systematics):
-            """ Given an event (i.e. a row of a record type Awkward array) and a variable, return a dictionary where the keys are
-            the systematics ("Nominal", "Up", "Down", etc.) and the values are the elements found in evt[variable + systematic].
-            This is done for every "variable + systematic" EXISTENT field.
-            N.B.: this assumes that a systematics branch is written in the format "$var_$sys" while the nominal value is simply "$var"
-            """
-            systematics = [*systematics]
-            systematics_record = {}
-            systematics.insert(0, "")
-            for sys in systematics:
-                if sys == "":
-                    placeholder = "Nominal"
+    def _get_nested_array_dict(self, input_df):
+        array_dic = {}
+        for var in self.variables:
+            array_dic[var] = {}
+            for sys in self.systematics:
+                if sys == "Nominal":
                     key = var
                 else:
-                    placeholder = sys
                     key = "{}_{}".format(var, sys)
-                if key in event.fields:
-                    systematics_record[placeholder] = event[key]
-            return systematics_record
+                if key in input_df.fields:
+                    array_dic[var][sys] = input_df[key]
 
-        def _get_variables_record(event, variables, systematics):
-            """Given an event, a list of variables and a list of systematics, return a dictionary where the keys are the variables
-            and the values are dictionaries built with the function _get_systematics_record.
-            """
-            variables_record = {}
-            for var in variables:
-                variables_record[var] = _get_systematics_record(event, var, systematics)
-            return variables_record
-
-        return ak.Array([_get_variables_record(evt, self.variables, self.systematics) for evt in input_df])
+        return array_dic
