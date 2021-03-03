@@ -25,8 +25,8 @@ class Tagger:
     def __init__(self, name, regressor_name, variables, systematics, predicted_variable):
         self.name = name
         self.regressor_name = regressor_name
-        self.variables = [var for var in variables]
-        self.systematics = [sys for sys in systematics]
+        self.variables = [*variables]
+        self.systematics = ["Nominal", *systematics]
         self.predicted_variable = predicted_variable
 
 
