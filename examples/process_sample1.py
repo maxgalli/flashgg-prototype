@@ -28,7 +28,7 @@ def main():
             )
 
     # Instances of final actions we want to perform on the dataset (?)
-    dumper = NTupleDumper("data/sample1_output.parquet")
+    dumper = NTupleDumper("data/sample1_output.root")
 
     # Create Tasks
     task = Task(
